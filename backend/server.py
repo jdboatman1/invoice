@@ -47,6 +47,7 @@ class Invoice(BaseModel):
     # Customer info
     customer_name: str
     billing_address: str = ""
+    service_address: str = ""
     phone: str = ""
     email: str = ""
     
@@ -74,6 +75,7 @@ class InvoiceCreate(BaseModel):
     tech: str = ""
     customer_name: str
     billing_address: str = ""
+    service_address: str = ""
     phone: str = ""
     email: str = ""
     line_items: List[LineItem] = []
@@ -90,6 +92,7 @@ class InvoiceUpdate(BaseModel):
     tech: Optional[str] = None
     customer_name: Optional[str] = None
     billing_address: Optional[str] = None
+    service_address: Optional[str] = None
     phone: Optional[str] = None
     email: Optional[str] = None
     line_items: Optional[List[LineItem]] = None
@@ -142,6 +145,7 @@ async def create_invoice(invoice_data: InvoiceCreate):
         tech=invoice_data.tech,
         customer_name=invoice_data.customer_name,
         billing_address=invoice_data.billing_address,
+        service_address=invoice_data.service_address,
         phone=invoice_data.phone,
         email=invoice_data.email,
         line_items=invoice_data.line_items,

@@ -165,27 +165,18 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
       {/* Invoice Document */}
       <div className="py-8 px-4">
         <div className="print-container max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden relative">
-          
-          {/* Watermark Seal */}
-          <div 
-            className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.08]"
-            style={{
-              backgroundImage: `url(${SEAL_URL})`,
-              backgroundSize: '400px',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }}
-          />
 
           {/* Content Container */}
           <div className="relative z-10 p-8">
             
             {/* Header */}
             <div className="flex items-start justify-between border-b-4 border-[#0a2463] pb-6 mb-6">
-              <div className="flex items-center gap-4">
-                <img src={LOGO_URL} alt="AAA Irrigation Service" className="h-20 w-auto" />
-                <div>
-                  <h1 className="text-2xl font-bold text-[#0a2463]">AAA IRRIGATION SERVICE, LLC</h1>
+              <div className="flex flex-col items-center">
+                <div className="flex items-center gap-4">
+                  <img src={LOGO_URL} alt="AAA Irrigation Service" className="h-20 w-auto" />
+                  <h1 className="text-3xl font-black text-[#0a2463] tracking-tight" style={{ fontWeight: 900 }}>AAA IRRIGATION SERVICE, LLC</h1>
+                </div>
+                <div className="text-center mt-2">
                   <p className="text-gray-600">Allen TX 75002</p>
                   <p className="text-gray-600">469 751-3567</p>
                   <p className="text-[#1e88e5]">www.aaairrigationservice.com</p>
@@ -210,6 +201,22 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
                 <p className="text-gray-600" data-testid="billing-address">{invoice.billing_address}</p>
                 <p className="text-gray-600" data-testid="customer-phone">{invoice.phone}</p>
                 <p className="text-gray-600" data-testid="customer-email">{invoice.email}</p>
+                
+                {invoice.service_address && (
+                  <div className="mt-4">
+                    <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Service Address</p>
+                    <p className="text-gray-600" data-testid="service-address">{invoice.service_address}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Center - Seal */}
+              <div className="flex items-start justify-center">
+                <img 
+                  src={SEAL_URL} 
+                  alt="Texas Licensed Irrigator Seal" 
+                  className="w-32 h-32 object-contain"
+                />
               </div>
 
               {/* Right - Invoice Details */}
@@ -344,6 +351,7 @@ const InvoiceForm = ({ onSave, onCancel, editInvoice }) => {
   const [formData, setFormData] = useState({
     customer_name: editInvoice?.customer_name || "",
     billing_address: editInvoice?.billing_address || "",
+    service_address: editInvoice?.service_address || "",
     phone: editInvoice?.phone || "",
     email: editInvoice?.email || "",
     date: editInvoice?.date || new Date().toISOString().split('T')[0],
@@ -441,6 +449,14 @@ const InvoiceForm = ({ onSave, onCancel, editInvoice }) => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0a2463] focus:border-transparent"
                   rows={2}
                   data-testid="input-billing-address"
+                />
+                <textarea
+                  placeholder="Service Address (if different)"
+                  value={formData.service_address}
+                  onChange={(e) => setFormData({ ...formData, service_address: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0a2463] focus:border-transparent"
+                  rows={2}
+                  data-testid="input-service-address"
                 />
                 <input
                   type="tel"
