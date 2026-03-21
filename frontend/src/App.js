@@ -166,6 +166,25 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
       <div className="py-8 px-4">
         <div className="print-container max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden relative">
 
+          {/* Seal - Bottom Left, 15% opacity, 30% larger */}
+          <div className="absolute bottom-8 left-8 z-20 pointer-events-none" style={{ opacity: 0.15 }}>
+            <img 
+              src={SEAL_URL} 
+              alt="Texas Licensed Irrigator Seal" 
+              className="object-contain"
+              style={{ width: '208px', height: '208px' }}
+            />
+          </div>
+
+          {/* PAID Stamp */}
+          {invoice.payment_status === 'paid' && (
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none rotate-[-15deg]">
+              <div className="border-8 border-green-600 rounded-lg px-8 py-4" style={{ opacity: 0.7 }}>
+                <p className="text-6xl font-black text-green-600 tracking-widest">PAID</p>
+              </div>
+            </div>
+          )}
+
           {/* Content Container */}
           <div className="relative z-10 p-8">
             
@@ -174,7 +193,10 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
               <div className="flex flex-col items-center">
                 <div className="flex items-center gap-4">
                   <img src={LOGO_URL} alt="AAA Irrigation Service" className="h-20 w-auto" />
-                  <h1 className="text-3xl font-black text-[#0a2463] tracking-tight" style={{ fontWeight: 900 }}>AAA IRRIGATION SERVICE, LLC</h1>
+                  <div className="text-center">
+                    <h1 className="text-5xl font-black text-[#0a2463] tracking-tight" style={{ fontWeight: 900 }}>AAA</h1>
+                    <p className="text-xl font-bold text-[#0a2463] tracking-wide">IRRIGATION SERVICE, LLC</p>
+                  </div>
                 </div>
                 <div className="text-center mt-2">
                   <p className="text-gray-600">Allen TX 75002</p>
@@ -184,11 +206,6 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
               </div>
               <div className="text-right">
                 <h2 className="text-3xl font-bold text-[#0a2463] tracking-wider">INVOICE</h2>
-                {invoice.payment_status === 'paid' && (
-                  <span className="inline-block mt-2 px-4 py-1 bg-green-500 text-white text-sm font-bold rounded-full">
-                    PAID
-                  </span>
-                )}
               </div>
             </div>
 
@@ -208,15 +225,6 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
                     <p className="text-gray-600" data-testid="service-address">{invoice.service_address}</p>
                   </div>
                 )}
-              </div>
-
-              {/* Center - Seal */}
-              <div className="flex items-start justify-center">
-                <img 
-                  src={SEAL_URL} 
-                  alt="Texas Licensed Irrigator Seal" 
-                  className="w-32 h-32 object-contain"
-                />
               </div>
 
               {/* Right - Invoice Details */}
