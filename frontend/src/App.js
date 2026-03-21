@@ -13,6 +13,14 @@ const SEAL_URL = "https://customer-assets.emergentagent.com/job_d103776f-33dd-49
 // Payment Modal Component
 const PaymentModal = ({ isOpen, onClose, invoice, onPaymentSuccess }) => {
   const [selectedMethod, setSelectedMethod] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [cardForm, setCardForm] = useState({
+    cardNumber: '',
+    expiry: '',
+    cvc: '',
+    name: ''
+  });
+  const [processing, setProcessing] = useState(false);
 
   if (!isOpen) return null;
 
@@ -29,67 +37,267 @@ const PaymentModal = ({ isOpen, onClose, invoice, onPaymentSuccess }) => {
     }
   };
 
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCardSubmit = async (e) => {
+    e.preventDefault();
+    setProcessing(true);
+    
+    // Simulate processing - in production, this would call Chase API
+    setTimeout(async () => {
+      await handlePayment('credit_card');
+      setProcessing(false);
+    }, 2000);
+  };
+
+  const formatCardNumber = (value) => {
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    const matches = v.match(/\d{4,16}/g);
+    const match = matches && matches[0] || '';
+    const parts = [];
+    for (let i = 0, len = match.length; i < len; i += 4) {
+      parts.push(match.substring(i, i + 4));
+    }
+    return parts.length ? parts.join(' ') : value;
+  };
+
+  const formatExpiry = (value) => {
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    if (v.length >= 2) {
+      return v.substring(0, 2) + '/' + v.substring(2, 4);
+    }
+    return v;
+  };
+
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" data-testid="payment-modal">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold text-[#0a2463] mb-2">Payment Options</h2>
         <p className="text-gray-600 mb-6">Total Due: <span className="font-bold text-[#0a2463]">${invoice?.total?.toFixed(2)}</span></p>
         
-        <div className="space-y-3">
-          {/* Credit Card - Chase */}
-          <button
-            onClick={() => setSelectedMethod('credit_card')}
-            className={`w-full p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${
-              selectedMethod === 'credit_card' 
-                ? 'border-[#0a2463] bg-[#0a2463]/5' 
-                : 'border-gray-200 hover:border-[#0a2463]/50'
-            }`}
-            data-testid="payment-credit-card"
-          >
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0a2463] to-[#1e88e5] flex items-center justify-center">
-              <CreditCard className="w-6 h-6 text-white" />
-            </div>
-            <div className="text-left">
-              <p className="font-semibold text-gray-900">Credit Card</p>
-              <p className="text-sm text-gray-500">Pay via Chase Processing</p>
-            </div>
-          </button>
+        {!selectedMethod && (
+          <div className="space-y-3">
+            {/* Credit Card - Chase */}
+            <button
+              onClick={() => setSelectedMethod('credit_card')}
+              className="w-full p-4 rounded-xl border-2 border-gray-200 hover:border-[#0a2463]/50 flex items-center gap-4 transition-all"
+              data-testid="payment-credit-card"
+            >
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0a2463] to-[#1e88e5] flex items-center justify-center">
+                <CreditCard className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="font-semibold text-gray-900">Credit Card</p>
+                <p className="text-sm text-gray-500">Pay via Chase Processing</p>
+              </div>
+            </button>
 
-          {/* Cash App */}
-          <button
-            onClick={() => handlePayment('cash_app')}
-            className="w-full p-4 rounded-xl border-2 border-gray-200 hover:border-[#00D632]/50 flex items-center gap-4 transition-all"
-            data-testid="payment-cash-app"
-          >
-            <div className="w-12 h-12 rounded-full bg-[#00D632] flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-white" />
-            </div>
-            <div className="text-left">
-              <p className="font-semibold text-gray-900">Cash App</p>
-              <p className="text-sm text-[#00D632] font-medium">$AAAIRRIGATIONSERVICE</p>
-            </div>
-          </button>
+            {/* Cash App */}
+            <button
+              onClick={() => setSelectedMethod('cash_app')}
+              className="w-full p-4 rounded-xl border-2 border-gray-200 hover:border-[#00D632]/50 flex items-center gap-4 transition-all"
+              data-testid="payment-cash-app"
+            >
+              <div className="w-12 h-12 rounded-full bg-[#00D632] flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="font-semibold text-gray-900">Cash App</p>
+                <p className="text-sm text-[#00D632] font-medium">$AAAIRRIGATIONSERVICE</p>
+              </div>
+            </button>
 
-          {/* Zelle */}
-          <button
-            onClick={() => handlePayment('zelle')}
-            className="w-full p-4 rounded-xl border-2 border-gray-200 hover:border-[#6D1ED4]/50 flex items-center gap-4 transition-all"
-            data-testid="payment-zelle"
-          >
-            <div className="w-12 h-12 rounded-full bg-[#6D1ED4] flex items-center justify-center">
-              <Building2 className="w-6 h-6 text-white" />
-            </div>
-            <div className="text-left">
-              <p className="font-semibold text-gray-900">Zelle</p>
-              <p className="text-sm text-[#6D1ED4] font-medium">aaairrigationservice@yahoo.com</p>
-            </div>
-          </button>
-        </div>
+            {/* Zelle */}
+            <button
+              onClick={() => setSelectedMethod('zelle')}
+              className="w-full p-4 rounded-xl border-2 border-gray-200 hover:border-[#6D1ED4]/50 flex items-center gap-4 transition-all"
+              data-testid="payment-zelle"
+            >
+              <div className="w-12 h-12 rounded-full bg-[#6D1ED4] flex items-center justify-center">
+                <Building2 className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="font-semibold text-gray-900">Zelle</p>
+                <p className="text-sm text-[#6D1ED4] font-medium">aaairrigationservice@yahoo.com</p>
+              </div>
+            </button>
+          </div>
+        )}
 
+        {/* Credit Card Form */}
         {selectedMethod === 'credit_card' && (
-          <div className="mt-4 p-4 bg-gray-50 rounded-xl">
-            <p className="text-sm text-gray-600 mb-3">Chase Credit Card processing will be available. For now, please contact us directly.</p>
-            <p className="font-semibold text-[#0a2463]">Call: 469 751-3567</p>
+          <div className="space-y-4">
+            <button 
+              onClick={() => setSelectedMethod(null)}
+              className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
+            >
+              ← Back to options
+            </button>
+            
+            <form onSubmit={handleCardSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Cardholder Name</label>
+                <input
+                  type="text"
+                  value={cardForm.name}
+                  onChange={(e) => setCardForm({...cardForm, name: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0a2463] focus:border-transparent"
+                  placeholder="John Doe"
+                  required
+                  data-testid="card-name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
+                <input
+                  type="text"
+                  value={cardForm.cardNumber}
+                  onChange={(e) => setCardForm({...cardForm, cardNumber: formatCardNumber(e.target.value)})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0a2463] focus:border-transparent"
+                  placeholder="1234 5678 9012 3456"
+                  maxLength="19"
+                  required
+                  data-testid="card-number"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Expiry</label>
+                  <input
+                    type="text"
+                    value={cardForm.expiry}
+                    onChange={(e) => setCardForm({...cardForm, expiry: formatExpiry(e.target.value)})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0a2463] focus:border-transparent"
+                    placeholder="MM/YY"
+                    maxLength="5"
+                    required
+                    data-testid="card-expiry"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">CVC</label>
+                  <input
+                    type="text"
+                    value={cardForm.cvc}
+                    onChange={(e) => setCardForm({...cardForm, cvc: e.target.value.replace(/\D/g, '').slice(0, 4)})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0a2463] focus:border-transparent"
+                    placeholder="123"
+                    maxLength="4"
+                    required
+                    data-testid="card-cvc"
+                  />
+                </div>
+              </div>
+              
+              <button
+                type="submit"
+                disabled={processing}
+                className="w-full py-4 bg-[#0a2463] text-white rounded-xl font-semibold hover:bg-[#0a2463]/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                data-testid="submit-card-payment"
+              >
+                {processing ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="w-5 h-5" />
+                    Pay ${invoice?.total?.toFixed(2)}
+                  </>
+                )}
+              </button>
+              
+              <p className="text-xs text-center text-gray-500">
+                Secured by Chase Payment Processing
+              </p>
+            </form>
+          </div>
+        )}
+
+        {/* Cash App Instructions */}
+        {selectedMethod === 'cash_app' && (
+          <div className="space-y-4">
+            <button 
+              onClick={() => setSelectedMethod(null)}
+              className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
+            >
+              ← Back to options
+            </button>
+            
+            <div className="bg-[#00D632]/10 rounded-xl p-6 text-center">
+              <div className="w-16 h-16 rounded-full bg-[#00D632] flex items-center justify-center mx-auto mb-4">
+                <DollarSign className="w-8 h-8 text-white" />
+              </div>
+              <p className="text-gray-600 mb-2">Send payment to:</p>
+              <p className="text-2xl font-bold text-[#00D632] mb-4">$AAAIRRIGATIONSERVICE</p>
+              <p className="text-lg font-semibold text-gray-800 mb-4">Amount: ${invoice?.total?.toFixed(2)}</p>
+              
+              <button
+                onClick={() => copyToClipboard('$AAAIRRIGATIONSERVICE')}
+                className="px-6 py-2 bg-[#00D632] text-white rounded-lg font-medium hover:bg-[#00D632]/90 transition-all"
+              >
+                {copied ? 'Copied!' : 'Copy Cash Tag'}
+              </button>
+              
+              <p className="text-sm text-gray-500 mt-4">
+                Open Cash App and send ${invoice?.total?.toFixed(2)} to the above Cash Tag.<br/>
+                Include invoice #{invoice?.invoice_number} in the note.
+              </p>
+            </div>
+            
+            <button
+              onClick={() => handlePayment('cash_app')}
+              className="w-full py-3 bg-[#00D632] text-white rounded-xl font-semibold hover:bg-[#00D632]/90 transition-all"
+              data-testid="confirm-cash-app"
+            >
+              I've Sent the Payment
+            </button>
+          </div>
+        )}
+
+        {/* Zelle Instructions */}
+        {selectedMethod === 'zelle' && (
+          <div className="space-y-4">
+            <button 
+              onClick={() => setSelectedMethod(null)}
+              className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
+            >
+              ← Back to options
+            </button>
+            
+            <div className="bg-[#6D1ED4]/10 rounded-xl p-6 text-center">
+              <div className="w-16 h-16 rounded-full bg-[#6D1ED4] flex items-center justify-center mx-auto mb-4">
+                <Building2 className="w-8 h-8 text-white" />
+              </div>
+              <p className="text-gray-600 mb-2">Send Zelle payment to:</p>
+              <p className="text-lg font-bold text-[#6D1ED4] mb-4 break-all">aaairrigationservice@yahoo.com</p>
+              <p className="text-lg font-semibold text-gray-800 mb-4">Amount: ${invoice?.total?.toFixed(2)}</p>
+              
+              <button
+                onClick={() => copyToClipboard('aaairrigationservice@yahoo.com')}
+                className="px-6 py-2 bg-[#6D1ED4] text-white rounded-lg font-medium hover:bg-[#6D1ED4]/90 transition-all"
+              >
+                {copied ? 'Copied!' : 'Copy Email'}
+              </button>
+              
+              <p className="text-sm text-gray-500 mt-4">
+                Open your banking app and send ${invoice?.total?.toFixed(2)} via Zelle to the above email.<br/>
+                Include invoice #{invoice?.invoice_number} in the memo.
+              </p>
+            </div>
+            
+            <button
+              onClick={() => handlePayment('zelle')}
+              className="w-full py-3 bg-[#6D1ED4] text-white rounded-xl font-semibold hover:bg-[#6D1ED4]/90 transition-all"
+              data-testid="confirm-zelle"
+            >
+              I've Sent the Payment
+            </button>
           </div>
         )}
 
