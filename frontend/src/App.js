@@ -166,13 +166,13 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
       <div className="py-8 px-4">
         <div className="print-container max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden relative">
 
-          {/* Seal - Bottom Left, 15% opacity, 30% larger */}
-          <div className="absolute bottom-8 left-8 z-20 pointer-events-none" style={{ opacity: 0.15 }}>
+          {/* Seal - Bottom Left, 15% opacity, higher position for signature space */}
+          <div className="absolute bottom-52 left-8 z-20 pointer-events-none" style={{ opacity: 0.15 }}>
             <img 
               src={SEAL_URL} 
               alt="Texas Licensed Irrigator Seal" 
               className="object-contain"
-              style={{ width: '208px', height: '208px' }}
+              style={{ width: '240px', height: '240px' }}
             />
           </div>
 
@@ -190,19 +190,13 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
             
             {/* Header */}
             <div className="flex items-start justify-between border-b-4 border-[#0a2463] pb-6 mb-6">
-              <div className="flex flex-col items-center">
-                <div className="flex items-center gap-4">
-                  <img src={LOGO_URL} alt="AAA Irrigation Service" className="h-20 w-auto" />
-                  <div className="text-center">
-                    <h1 className="text-5xl font-black text-[#0a2463] tracking-tight" style={{ fontWeight: 900 }}>AAA</h1>
-                    <p className="text-xl font-bold text-[#0a2463] tracking-wide">IRRIGATION SERVICE, LLC</p>
-                  </div>
-                </div>
-                <div className="text-center mt-2">
-                  <p className="text-gray-600">Allen TX 75002</p>
-                  <p className="text-gray-600">469 751-3567</p>
-                  <p className="text-[#1e88e5]">www.aaairrigationservice.com</p>
-                </div>
+              <div className="text-left">
+                <p className="text-gray-600">Allen TX 75002</p>
+                <p className="text-gray-600">469 751-3567</p>
+                <p className="text-[#1e88e5]">www.aaairrigationservice.com</p>
+              </div>
+              <div className="flex-1 flex justify-center">
+                <img src={LOGO_URL} alt="AAA Irrigation Service" className="h-28 w-auto" />
               </div>
               <div className="text-right">
                 <h2 className="text-3xl font-bold text-[#0a2463] tracking-wider">INVOICE</h2>
