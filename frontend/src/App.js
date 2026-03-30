@@ -375,12 +375,12 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
         <div className="print-container max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden relative">
 
           {/* Seal - Center of page, larger */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none" style={{ opacity: 0.15 }}>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none" style={{ opacity: 0.35 }}>
             <img 
               src={SEAL_URL} 
               alt="Texas Licensed Irrigator Seal" 
               className="object-contain"
-              style={{ width: '450px', height: '450px' }}
+              style={{ width: '585px', height: '585px' }}
             />
           </div>
 
@@ -436,20 +436,20 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
                 <table className="ml-auto">
                   <tbody>
                     <tr>
-                      <td className="text-right pr-3 font-bold text-[#0a2463]" data-testid="invoice-number">{invoice.invoice_number}</td>
-                      <td className="text-right text-gray-500 w-24">Invoice #:</td>
+                      <td className="text-right text-gray-500 pr-4">Invoice #:</td>
+                      <td className="text-left font-bold text-[#0a2463]" data-testid="invoice-number">{invoice.invoice_number}</td>
                     </tr>
                     <tr>
-                      <td className="text-right pr-3 font-medium" data-testid="invoice-date">{invoice.date}</td>
-                      <td className="text-right text-gray-500">Date:</td>
+                      <td className="text-right text-gray-500 pr-4">Date:</td>
+                      <td className="text-left font-medium" data-testid="invoice-date">{invoice.date}</td>
                     </tr>
                     <tr>
-                      <td className="text-right pr-3 font-medium" data-testid="invoice-terms">{invoice.terms}</td>
-                      <td className="text-right text-gray-500">Terms:</td>
+                      <td className="text-right text-gray-500 pr-4">Terms:</td>
+                      <td className="text-left font-medium" data-testid="invoice-terms">{invoice.terms}</td>
                     </tr>
                     <tr>
-                      <td className="text-right pr-3 font-medium" data-testid="invoice-tech">{invoice.tech}</td>
-                      <td className="text-right text-gray-500">Tech:</td>
+                      <td className="text-right text-gray-500 pr-4">Tech:</td>
+                      <td className="text-left font-medium" data-testid="invoice-tech">{invoice.tech}</td>
                     </tr>
                   </tbody>
                 </table>
