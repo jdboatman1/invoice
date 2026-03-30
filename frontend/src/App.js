@@ -374,13 +374,13 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
       <div className="py-8 px-4">
         <div className="print-container max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden relative">
 
-          {/* Seal - Bottom Left, 15% opacity, higher position for signature space */}
-          <div className="absolute bottom-52 left-8 z-20 pointer-events-none" style={{ opacity: 0.15 }}>
+          {/* Seal - Center of page, larger */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none" style={{ opacity: 0.15 }}>
             <img 
               src={SEAL_URL} 
               alt="Texas Licensed Irrigator Seal" 
               className="object-contain"
-              style={{ width: '240px', height: '240px' }}
+              style={{ width: '320px', height: '320px' }}
             />
           </div>
 
@@ -430,23 +430,27 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
               </div>
 
               {/* Right - Invoice Details */}
-              <div className="text-right space-y-2">
-                <div className="flex justify-end gap-8">
-                  <span className="text-gray-500">Invoice #:</span>
-                  <span className="font-bold text-[#0a2463]" data-testid="invoice-number">{invoice.invoice_number}</span>
-                </div>
-                <div className="flex justify-end gap-8">
-                  <span className="text-gray-500">Date:</span>
-                  <span className="font-medium" data-testid="invoice-date">{invoice.date}</span>
-                </div>
-                <div className="flex justify-end gap-8">
-                  <span className="text-gray-500">Terms:</span>
-                  <span className="font-medium" data-testid="invoice-terms">{invoice.terms}</span>
-                </div>
-                <div className="flex justify-end gap-8">
-                  <span className="text-gray-500">Tech:</span>
-                  <span className="font-medium" data-testid="invoice-tech">{invoice.tech}</span>
-                </div>
+              <div className="text-right">
+                <table className="ml-auto">
+                  <tbody>
+                    <tr>
+                      <td className="text-right pr-3 font-bold text-[#0a2463]" data-testid="invoice-number">{invoice.invoice_number}</td>
+                      <td className="text-right text-gray-500 w-24">Invoice #:</td>
+                    </tr>
+                    <tr>
+                      <td className="text-right pr-3 font-medium" data-testid="invoice-date">{invoice.date}</td>
+                      <td className="text-right text-gray-500">Date:</td>
+                    </tr>
+                    <tr>
+                      <td className="text-right pr-3 font-medium" data-testid="invoice-terms">{invoice.terms}</td>
+                      <td className="text-right text-gray-500">Terms:</td>
+                    </tr>
+                    <tr>
+                      <td className="text-right pr-3 font-medium" data-testid="invoice-tech">{invoice.tech}</td>
+                      <td className="text-right text-gray-500">Tech:</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
 
