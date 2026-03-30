@@ -380,7 +380,7 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
               src={SEAL_URL} 
               alt="Texas Licensed Irrigator Seal" 
               className="object-contain"
-              style={{ width: '320px', height: '320px' }}
+              style={{ width: '450px', height: '450px' }}
             />
           </div>
 
@@ -399,6 +399,8 @@ const InvoiceTemplate = ({ invoice, onBack, onPaymentSuccess }) => {
             {/* Header */}
             <div className="flex items-start justify-between border-b-4 border-[#0a2463] pb-6 mb-6">
               <div className="text-left">
+                <p className="font-bold text-[#0a2463] text-lg">AAA IRRIGATION SERVICE, LLC.</p>
+                <p className="text-gray-600">14 Monroe Ct.</p>
                 <p className="text-gray-600">Allen TX 75002</p>
                 <p className="text-gray-600">469 751-3567</p>
                 <p className="text-[#1e88e5]">www.aaairrigationservice.com</p>
