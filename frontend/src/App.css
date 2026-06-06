@@ -46,12 +46,54 @@ button:focus {
     background: white !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
   }
   
+  html {
+    font-size: 11px !important;
+  }
+
   .print-container {
     box-shadow: none !important;
     margin: 0 !important;
     border-radius: 0 !important;
+    font-size: 11px !important;
+  }
+
+  /* Compact layout rules on print */
+  .print-container h2,
+  .print-container .text-3xl {
+    font-size: 1.6rem !important;
+  }
+  .print-container .text-xl,
+  .print-container .text-2xl {
+    font-size: 1.2rem !important;
+  }
+  .print-container .mb-8 {
+    margin-bottom: 0.5rem !important;
+  }
+  .print-container .mb-6 {
+    margin-bottom: 0.5rem !important;
+  }
+  .print-container .pb-6 {
+    padding-bottom: 0.4rem !important;
+  }
+  .print-container .py-3 {
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.4rem !important;
+  }
+  .print-container .mt-3 {
+    margin-top: 0.4rem !important;
+  }
+
+  /* No border rules on print */
+  .print-container td,
+  .print-container th,
+  .print-container tr {
+    border-bottom: none !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
   }
 
   table {
@@ -63,6 +105,73 @@ button:focus {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
+
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .print-footer {
+    position: fixed !important;
+    bottom: 0.5cm !important;
+    left: 1.5cm !important;
+    right: 1.5cm !important;
+    background: white !important;
+    border-top: 1px solid #e5e7eb !important;
+    padding-top: 8px !important;
+    height: 60px !important;
+    text-align: center !important;
+  }
+
+  .print-only-page-number {
+    display: block !important;
+  }
+
+  .print-only-page-number::after {
+    content: "Page " counter(page);
+  }
+
+  .continuation-header {
+    position: fixed !important;
+    top: 0.3cm !important;
+    left: 1.5cm !important;
+    right: 1.5cm !important;
+    z-index: 1000 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 2px solid #1b7abf !important;
+    padding-bottom: 4px !important;
+    background: white !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    color: #4b5563 !important;
+  }
+
+  .page-number-continuation::after {
+    content: counter(page);
+  }
+
+  .print-first-page-cover {
+    display: block !important;
+    position: absolute !important;
+    top: -1.5cm !important;
+    left: -1.5cm !important;
+    right: -1.5cm !important;
+    height: 1.6cm !important;
+    background: white !important;
+    z-index: 9999 !important;
+  }
+}
+
+@page {
+  margin: 1.5cm 1.5cm 4.2cm 1.5cm !important;
+}
+
+.print-only-page-number,
+.continuation-header,
+.print-first-page-cover {
+  display: none;
 }
 
 /* Animation utilities */
